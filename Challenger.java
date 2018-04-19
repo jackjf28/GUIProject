@@ -1,4 +1,4 @@
-package fProject;
+package application;
 
 public class Challenger {
 	int rank;

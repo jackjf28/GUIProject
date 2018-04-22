@@ -81,9 +81,8 @@ public class Main extends Application {
 			Label teamLabel = new Label();
 			teamLabel.setAlignment(Pos.CENTER);
 			teamLabel.setMinHeight(25);
-			if(challengers.isEmpty())
-			{
-			teamLabel.setText("TBA");
+			if(challengers.isEmpty()) {
+				teamLabel.setText("TBA");
 			}
 			else {
 				teamLabel.setText(challengers.get(i).getName());
@@ -98,7 +97,7 @@ public class Main extends Application {
 			teamsAndScores.getChildren().addAll(teamLabel, scoreLabel);
 			matchup.getChildren().add(teamsAndScores);
 			
-			if(insertBtn && !teamLabel.getText().equals("TBA")) {
+			if(insertBtn /*&& !teamLabel.getText().equals("TBA")*/) {
 				matchup.getChildren().add(createScoreButton(challengers));
 			}
 			else {

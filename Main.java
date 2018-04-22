@@ -17,7 +17,10 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-
+//TODO List
+//Figure out how to overwrite "Score" with the team's final score
+//Figure out how to move the winner to their respective slot in the next round
+//Create a box that lists the final rankings from 1st-3rd place
 
 public class Main extends Application {
 	//Bracket object based on the file passed in
@@ -27,16 +30,13 @@ public class Main extends Application {
 		try {
 			primaryStage.setTitle("Tournament Bracket");
 			HBox primaryPane = new HBox(40.0);
-			Scene scene = new Scene(primaryPane, 800, 700, Color.DARKGRAY);
-			//The current round of the tournament
-			
-//			VBox round = new VBox(10.0);
-//			ArrayList<VBox> matchList = new ArrayList<VBox>();
+			Scene scene = new Scene(primaryPane, 600, 500, Color.DARKGRAY);
+			//The current round of the tournament		
 			int i = 2;
 			//TODO figure out a good way to iterate and create new matchups
 			boolean firstRound = true;
 			while(i != bracket.numChallengers*2) {
-				VBox round = new VBox(10.0);
+				VBox round = new VBox(20.0);
 				ArrayList<VBox> matchList = new ArrayList<VBox>();
 				for (int game = 0; game < bracket.numChallengers/i; game++) {
 					
@@ -55,7 +55,7 @@ public class Main extends Application {
 				i *= 2;
 				firstRound = false;
 			}	
-
+	
 			primaryStage.setScene(scene);
 			primaryStage.show();
 		} catch(Exception e) {
@@ -73,14 +73,16 @@ public class Main extends Application {
 	private VBox createChallenge(ArrayList<Challenger> challengers) {
 		//matchup includes both team names, their respective scores,
 		//and a button to update their scores
-		VBox matchup = new VBox(10.0);
-		boolean insertBtn = true;
+		VBox matchup = new VBox(5.0);
+//		boolean insertBtn = true;
+		Label[] scoreLabelList = new Label[2];
 		for(int i = 0; i < 2; i++) {
 			//Stores the team name and score
 			HBox teamsAndScores = new HBox(10.0);
 			Label teamLabel = new Label();
 			teamLabel.setAlignment(Pos.CENTER);
 			teamLabel.setMinHeight(25);
+			//Assigns the label TBA if the match isn't in the first round
 			if(challengers.isEmpty()) {
 				teamLabel.setText("TBA");
 			}
@@ -96,15 +98,12 @@ public class Main extends Application {
 			
 			teamsAndScores.getChildren().addAll(teamLabel, scoreLabel);
 			matchup.getChildren().add(teamsAndScores);
-			
-			if(insertBtn /*&& !teamLabel.getText().equals("TBA")*/) {
-				matchup.getChildren().add(createScoreButton(challengers));
-			}
-			else {
-				
-			}
-			insertBtn = false;
+			scoreLabelList[i] = scoreLabel;
+//			if(insertBtn /*&& !teamLabel.getText().equals("TBA")*/) {
+//			insertBtn = false;
 		}
+		matchup.getChildren().add(1, createScoreButton(challengers, scoreLabelList));
+
 		return matchup;
 	}
 	
@@ -115,7 +114,7 @@ public class Main extends Application {
 	 * @param challengers the list of the 2 teams in a given match
 	 * @return the button for a given match
 	 */
-	private Button createScoreButton(ArrayList<Challenger> challengers) {
+	private Button createScoreButton(ArrayList<Challenger> challengers, Label[] scoreLabelList) {
 		Button button = new Button("Submit Scores");
 		button.setOnAction(new EventHandler<ActionEvent>()
 		{
@@ -132,6 +131,9 @@ public class Main extends Application {
 						button.setOnAction(new EventHandler<ActionEvent>()
 								{
 									public void handle(ActionEvent e) {
+										for(int i = 0; i < scoreLabelList.length; i++) {
+											scoreLabelList[i].setText(challengers.get(i).getCurrScoreString());
+										}
 										if(challengers.get(0).getCurrScore() > challengers.get(1).getCurrScore()) {
 											//Test to make sure comparisons are working
 											System.out.println(challengers.get(0).getName() + " wins!");
@@ -178,8 +180,9 @@ public class Main extends Application {
 		insertedScore.setOnAction(new EventHandler<ActionEvent>()
 				{
 					public void handle(ActionEvent e) {				
-						int finalScore = Integer.parseInt(insertedScore.getText());
+						Integer finalScore = Integer.parseInt(insertedScore.getText());
 						team.setCurrScore(finalScore);
+						team.setCurrScoreString(insertedScore.getText());
 					}
 				});
 		

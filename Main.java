@@ -26,43 +26,36 @@ public class Main extends Application {
 	public void start(Stage primaryStage) {
 		try {
 			primaryStage.setTitle("Tournament Bracket");
-			HBox primaryPane = new HBox(10.0);
-			VBox firstRound = new VBox(10.0);
+			HBox primaryPane = new HBox(40.0);
 			Scene scene = new Scene(primaryPane, 800, 700, Color.DARKGRAY);
 			//The current round of the tournament
-			ArrayList<VBox> round = new ArrayList<VBox>();
-			boolean round1 = true;
-			if(round1) {
-				//TODO figure out a good way to iterate and create new matchups
-				for (int game = 0; game < bracket.numChallengers/2; game++) {
+			
+//			VBox round = new VBox(10.0);
+//			ArrayList<VBox> matchList = new ArrayList<VBox>();
+			int i = 2;
+			//TODO figure out a good way to iterate and create new matchups
+			boolean firstRound = true;
+			while(i != bracket.numChallengers*2) {
+				VBox round = new VBox(10.0);
+				ArrayList<VBox> matchList = new ArrayList<VBox>();
+				for (int game = 0; game < bracket.numChallengers/i; game++) {
+					
 					//Stores the two teams being matched up
 					ArrayList<Challenger> challengers = new ArrayList<Challenger>();
-					challengers.add(bracket.getChallenges()[game].getCOne());
-					challengers.add(bracket.getChallenges()[game].getCTwo());
+					if(firstRound == true) {
+						challengers.add(bracket.getChallenges()[game].getCOne());
+						challengers.add(bracket.getChallenges()[game].getCTwo());
+					}
 	
-					round.add(createChallenge(challengers));
+					matchList.add(createChallenge(challengers));
 	//				bracket.updateChallenge(game);
 				}
-				round1 = false;
-			}
-			else {
-				int i = 2;
-				while(bracket.numChallengers/(2*i) != 1) {
-					VBox successorRound = new VBox(10.0);
-					ArrayList<VBox> rounds = new ArrayList<VBox>();
-					for(int game = 0; game < bracket.numChallengers/(2*i); game++) {
-//						rounds.add(createEmptyChallenge());
-					}
-					i += 2;
-					successorRound.getChildren().addAll(rounds);
-					primaryPane.getChildren().addAll(successorRound);
-				}
-				
-			}
-			firstRound.getChildren().addAll(round);
-			//sets the left side as the first round
-			primaryPane.getChildren().addAll(firstRound);
-//			primaryPane.setCenter(new Label("hello"));
+				round.getChildren().addAll(matchList);
+				primaryPane.getChildren().addAll(round);
+				i *= 2;
+				firstRound = false;
+			}	
+
 			primaryStage.setScene(scene);
 			primaryStage.show();
 		} catch(Exception e) {
@@ -82,13 +75,19 @@ public class Main extends Application {
 		//and a button to update their scores
 		VBox matchup = new VBox(10.0);
 		boolean insertBtn = true;
-		for(Challenger team : challengers) {
+		for(int i = 0; i < 2; i++) {
 			//Stores the team name and score
 			HBox teamsAndScores = new HBox(10.0);
 			Label teamLabel = new Label();
 			teamLabel.setAlignment(Pos.CENTER);
 			teamLabel.setMinHeight(25);
-			teamLabel.setText(team.getName());
+			if(challengers.isEmpty())
+			{
+			teamLabel.setText("TBA");
+			}
+			else {
+				teamLabel.setText(challengers.get(i).getName());
+			}
 			teamLabel.setTextFill(Color.RED);
 			
 			Label scoreLabel = new Label();
@@ -99,8 +98,11 @@ public class Main extends Application {
 			teamsAndScores.getChildren().addAll(teamLabel, scoreLabel);
 			matchup.getChildren().add(teamsAndScores);
 			
-			if(insertBtn) {
+			if(insertBtn && !teamLabel.getText().equals("TBA")) {
 				matchup.getChildren().add(createScoreButton(challengers));
+			}
+			else {
+				
 			}
 			insertBtn = false;
 		}

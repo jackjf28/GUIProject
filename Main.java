@@ -120,7 +120,7 @@ public class Main extends Application {
 		{
 			public void handle(ActionEvent e) {
 				VBox vBox = new VBox();
-				Scene scene = new Scene(vBox, 300, 100, Color.GRAY);
+				Scene scene = new Scene(vBox, 400, 100, Color.GRAY);
 				boolean insertBtn = true;
 				for(Challenger team : challengers) {
 					vBox.getChildren().add(challengersInButton(team));
@@ -139,8 +139,11 @@ public class Main extends Application {
 											System.out.println(challengers.get(0).getName() + " wins!");
 										}
 										//TODO edit for cases where the scores are equal/ scores aren't entered
+										else if (challengers.get(0).getCurrScore() < challengers.get(1).getCurrScore()){
+											System.out.println(challengers.get(1).getName() + " wins!");
+										}
 										else {
-											
+											System.out.println("You cannot have a tie!");
 										}
 									}
 								});
@@ -148,6 +151,8 @@ public class Main extends Application {
 					}
 					insertBtn = false;
 				}
+				vBox.getChildren().add(new Label("You have to hit enter after typing"
+						+ " the score into each text field! :^)"));
 				Stage stage = new Stage();
 				stage.setTitle("Submit Match Scores");
 				stage.setScene(scene);

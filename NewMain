@@ -49,6 +49,12 @@ public class Main extends Application {
                     matchList.add(createChallenge(challengers));
                     bracket.updateChallenge(j);
                 }
+                if (i == bracket.numChallengers) {
+                    ArrayList<Challenger> thirdContenders = new ArrayList<Challenger>();
+                    thirdContenders.add(bracket.getChallenges()[bracket.numChallenges-3].getLoser());
+                    thirdContenders.add(bracket.getChallenges()[bracket.numChallenges-2].getLoser());
+                    bracket.getThirdPlace(thirdContenders.get(0),thirdContenders.get(1));
+                }
                 round.getChildren().addAll(matchList);
                 primaryPane.getChildren().addAll(round);
                 game+=bracket.numChallengers/i;

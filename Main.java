@@ -12,6 +12,7 @@ import javafx.stage.Stage;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollBar;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -35,19 +36,21 @@ public class Main extends Application {
 			int i = 2;
 			//TODO figure out a good way to iterate and create new matchups
 			boolean firstRound = true;
+			//Each iteration of the while loop generates a new round
 			while(i != bracket.numChallengers*2) {
 				VBox round = new VBox(20.0);
 				ArrayList<VBox> matchList = new ArrayList<VBox>();
 				for (int game = 0; game < bracket.numChallengers/i; game++) {
 					
 					//Stores the two teams being matched up
-					ArrayList<Challenger> challengers = new ArrayList<Challenger>();
-					if(firstRound == true) {
-						challengers.add(bracket.getChallenges()[game].getCOne());
-						challengers.add(bracket.getChallenges()[game].getCTwo());
-					}
+//					ArrayList<Challenger> challengers = new ArrayList<Challenger>();
+//					if(firstRound == true) {
+//						challengers.add(bracket.getChallenges()[game].getCOne());
+//						challengers.add(bracket.getChallenges()[game].getCTwo());
+//					}
 	
-					matchList.add(createChallenge(challengers));
+//					matchList.add(createChallenge(challengers));
+					matchList.add(createChallenge(bracket.getChallenges()[game]));
 	//				bracket.updateChallenge(game);
 				}
 				round.getChildren().addAll(matchList);
@@ -55,7 +58,6 @@ public class Main extends Application {
 				i *= 2;
 				firstRound = false;
 			}	
-	
 			primaryStage.setScene(scene);
 			primaryStage.show();
 		} catch(Exception e) {
@@ -70,11 +72,12 @@ public class Main extends Application {
 	 * @param challengers the list of 2 teams in a given match
 	 * @return a vertical box containing 2 horizontal boxes and a button.
 	 */
-	private VBox createChallenge(ArrayList<Challenger> challengers) {
+//	private VBox createChallenge(ArrayList<Challenger> challengers) {
+	private VBox createChallenge(BracketNode node) {
 		//matchup includes both team names, their respective scores,
 		//and a button to update their scores
 		VBox matchup = new VBox(5.0);
-//		boolean insertBtn = true;
+		//
 		Label[] scoreLabelList = new Label[2];
 		for(int i = 0; i < 2; i++) {
 			//Stores the team name and score
@@ -83,11 +86,12 @@ public class Main extends Application {
 			teamLabel.setAlignment(Pos.CENTER);
 			teamLabel.setMinHeight(25);
 			//Assigns the label TBA if the match isn't in the first round
-			if(challengers.isEmpty()) {
+			if(node.getCOne() == null || node.getCTwo() == null) {
 				teamLabel.setText("TBA");
 			}
 			else {
-				teamLabel.setText(challengers.get(i).getName());
+				teamLabel.setText(node.getCOne().getName());
+				teamLabel.setText(node.getCTwo().getName());
 			}
 			teamLabel.setTextFill(Color.RED);
 			
@@ -102,7 +106,7 @@ public class Main extends Application {
 //			if(insertBtn /*&& !teamLabel.getText().equals("TBA")*/) {
 //			insertBtn = false;
 		}
-		matchup.getChildren().add(1, createScoreButton(challengers, scoreLabelList));
+		matchup.getChildren().add(1, createScoreButton(node, scoreLabelList));
 
 		return matchup;
 	}
@@ -128,31 +132,32 @@ public class Main extends Application {
 						//This button will assign scores to their respective team
 						//when the user enters an integer
 						Button button = new Button("Submit Match Score");
-						button.setOnAction(new EventHandler<ActionEvent>()
-								{
-									public void handle(ActionEvent e) {
-										for(int i = 0; i < scoreLabelList.length; i++) {
-											scoreLabelList[i].setText(challengers.get(i).getCurrScoreString());
-										}
-										if(challengers.get(0).getCurrScore() > challengers.get(1).getCurrScore()) {
-											//Test to make sure comparisons are working
-											System.out.println(challengers.get(0).getName() + " wins!");
-										}
-										//TODO edit for cases where the scores are equal/ scores aren't entered
-										else if (challengers.get(0).getCurrScore() < challengers.get(1).getCurrScore()){
-											System.out.println(challengers.get(1).getName() + " wins!");
-										}
-										else {
-											System.out.println("You cannot have a tie!");
-										}
-									}
-								});
+						button.setOnAction(new EventHandler<ActionEvent>() {
+							public void handle(ActionEvent e) {
+								for(int i = 0; i < scoreLabelList.length; i++) {
+									scoreLabelList[i].setText(challengers.get(i).getCurrScoreString());
+								}
+								if(challengers.get(0).getCurrScore() > challengers.get(1).getCurrScore()) {
+									//Test to make sure comparisons are working
+									System.out.println(challengers.get(0).getName() + " wins!");
+								}
+								//TODO edit for cases where the scores are equal/ scores aren't entered
+								else if (challengers.get(0).getCurrScore() < challengers.get(1).getCurrScore()){
+									System.out.println(challengers.get(1).getName() + " wins!");
+								}
+								else {
+									System.out.println("You cannot have a tie!");
+								}
+								//TODO Check to see if all round scores have been submitted
+//								if()
+							}
+						});
 						vBox.getChildren().add(button);
 					}
 					insertBtn = false;
 				}
 				vBox.getChildren().add(new Label("You have to hit enter after typing"
-						+ " the score into each text field! :^)"));
+						+ " the score into each text field!"));
 				Stage stage = new Stage();
 				stage.setTitle("Submit Match Scores");
 				stage.setScene(scene);

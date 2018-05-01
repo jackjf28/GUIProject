@@ -1,0 +1,207 @@
+package application;
+    
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Scanner;
+
+import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.geometry.Pos;
+import javafx.stage.Stage;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+//TODO List
+//Figure out how to overwrite "Score" with the team's final score
+//Figure out how to move the winner to their respective slot in the next round
+//Create a box that lists the final rankings from 1st-3rd place
+
+public class Main extends Application {
+    //Bracket object based on the file passed in
+    private static Bracket bracket;
+    @Override
+    public void start(Stage primaryStage) {
+        try {
+            primaryStage.setTitle("Tournament Bracket");
+            HBox primaryPane = new HBox(40.0);
+            Scene scene = new Scene(primaryPane, 600, 500, Color.DARKGRAY);
+            //The current round of the tournament       
+            int i = 2;
+            int game = 0;
+            //TODO figure out a good way to iterate and create new matchups
+            while(i != bracket.numChallengers*2) {
+                VBox round = new VBox(20.0);
+                ArrayList<VBox> matchList = new ArrayList<VBox>();
+                for (int j = game; j < game + (bracket.numChallengers/i); j++) {
+                    
+                    //Stores the two teams being matched up
+                    ArrayList<Challenger> challengers = new ArrayList<Challenger>();
+                    
+                        challengers.add(bracket.getChallenges()[j].getCOne());
+                        challengers.add(bracket.getChallenges()[j].getCTwo());
+    
+                    matchList.add(createChallenge(challengers));
+                    bracket.updateChallenge(j);
+                }
+                round.getChildren().addAll(matchList);
+                primaryPane.getChildren().addAll(round);
+                game+=bracket.numChallengers/i;
+                i *= 2;
+            }   
+    
+            primaryStage.setScene(scene);
+            primaryStage.show();
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    /**
+     * This method creates a vertical box that includes 2 team and final score labels
+     * and a button for the user to manually update the final scores of the match
+     * 
+     * @param challengers the list of 2 teams in a given match
+     * @return a vertical box containing 2 horizontal boxes and a button.
+     */
+    private VBox createChallenge(ArrayList<Challenger> challengers) {
+        //matchup includes both team names, their respective scores,
+        //and a button to update their scores
+        VBox matchup = new VBox(5.0);
+//      boolean insertBtn = true;
+        Label[] scoreLabelList = new Label[2];
+        for(int i = 0; i < 2; i++) {
+            //Stores the team name and score
+            HBox teamsAndScores = new HBox(10.0);
+            Label teamLabel = new Label();
+            teamLabel.setAlignment(Pos.CENTER);
+            teamLabel.setMinHeight(25);
+            //Assigns the label TBA if the match isn't in the first round
+            if(challengers.isEmpty()) {
+                teamLabel.setText("TBA");
+            }
+            else {
+                teamLabel.setText(challengers.get(i).getName());
+            }
+            teamLabel.setTextFill(Color.RED);
+            
+            Label scoreLabel = new Label();
+            scoreLabel.setAlignment(Pos.CENTER);
+            scoreLabel.setMinHeight(25);
+            scoreLabel.setText("Score");
+            
+            teamsAndScores.getChildren().addAll(teamLabel, scoreLabel);
+            matchup.getChildren().add(teamsAndScores);
+            scoreLabelList[i] = scoreLabel;
+//          if(insertBtn /*&& !teamLabel.getText().equals("TBA")*/) {
+//          insertBtn = false;
+        }
+        matchup.getChildren().add(1, createScoreButton(challengers, scoreLabelList));
+
+        return matchup;
+    }
+    
+    /**
+     * This method creates a button for the primary GUI, which when pressed,
+     * will open a new window where the user can input scores for a match
+     * 
+     * @param challengers the list of the 2 teams in a given match
+     * @return the button for a given match
+     */
+    private Button createScoreButton(ArrayList<Challenger> challengers, Label[] scoreLabelList) {
+        Button button = new Button("Submit Scores");
+        button.setOnAction(new EventHandler<ActionEvent>()
+        {
+            public void handle(ActionEvent e) {
+                VBox vBox = new VBox();
+                Scene scene = new Scene(vBox, 400, 100, Color.GRAY);
+                boolean insertBtn = true;
+                for(Challenger team : challengers) {
+                    vBox.getChildren().add(challengersInButton(team));
+                    if(insertBtn) {
+                        //This button will assign scores to their respective team
+                        //when the user enters an integer
+                        Button button = new Button("Submit Match Score");
+                        button.setOnAction(new EventHandler<ActionEvent>()
+                                {
+                                    public void handle(ActionEvent e) {
+                                        for(int i = 0; i < scoreLabelList.length; i++) {
+                                            scoreLabelList[i].setText(challengers.get(i).getCurrScoreString());
+                                        }
+                                        if(challengers.get(0).getCurrScore() > challengers.get(1).getCurrScore()) {
+                                            //Test to make sure comparisons are working
+                                            System.out.println(challengers.get(0).getName() + " wins!");
+                                        }
+                                        //TODO edit for cases where the scores are equal/ scores aren't entered
+                                        else if (challengers.get(0).getCurrScore() < challengers.get(1).getCurrScore()){
+                                            System.out.println(challengers.get(1).getName() + " wins!");
+                                        }
+                                        else {
+                                            System.out.println("You cannot have a tie!");
+                                        }
+                                    }
+                                });
+                        vBox.getChildren().add(button);
+                    }
+                    insertBtn = false;
+                }
+                vBox.getChildren().add(new Label("You have to hit enter after typing"
+                        + " the score into each text field! :^)"));
+                Stage stage = new Stage();
+                stage.setTitle("Submit Match Scores");
+                stage.setScene(scene);
+                stage.show();
+            }
+        });
+        return button;
+    }
+    
+    /**
+     * This method helps display the team and score when the "Submit Scores"
+     * button is pressed in the primary bracket GUI
+     * 
+     * @param team
+     * @return the horizontal box including the team label and a text field
+     *          to input the final score
+     */
+    private HBox challengersInButton(Challenger team) {
+        HBox teamAndScore = new HBox(10.0);
+        Label teamLabel = new Label();
+        teamLabel.setAlignment(Pos.CENTER);
+        teamLabel.setMinHeight(25);
+        teamLabel.setText(team.getName());
+        teamLabel.setTextFill(Color.RED);       
+
+        TextField insertedScore = new TextField();
+        insertedScore.setMaxHeight(20); insertedScore.setMaxWidth(100);
+        insertedScore.setPromptText("Enter Score");
+        //Changes score when enter is hit on the text box
+        insertedScore.setOnAction(new EventHandler<ActionEvent>()
+                {
+                    public void handle(ActionEvent e) {             
+                        Integer finalScore = Integer.parseInt(insertedScore.getText());
+                        team.setCurrScore(finalScore);
+                        team.setCurrScoreString(insertedScore.getText());
+                    }
+                });
+        
+        teamAndScore.getChildren().addAll(teamLabel, insertedScore);    
+        return teamAndScore;
+    }
+    
+    public static void main(String[] args) {
+        try {
+            Scanner scr = new Scanner(System.in);
+            bracket = new Bracket("challengers8.txt");
+            scr.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        launch(args);
+    }
+}

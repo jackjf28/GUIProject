@@ -106,8 +106,9 @@ public class Main extends Application {
 //			if(insertBtn /*&& !teamLabel.getText().equals("TBA")*/) {
 //			insertBtn = false;
 		}
+		//Inserts the button at index 1, 
+		//between both challenger labels of a given match
 		matchup.getChildren().add(1, createScoreButton(node, scoreLabelList));
-
 		return matchup;
 	}
 	

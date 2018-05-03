@@ -69,9 +69,15 @@ public class Bracket {
     }
     
    
-    public Challenger getThirdPlace() {
-        Challenger cOne = challenges[nChallenges -1].getLoser();
-        Challenger cTwo = challenges[nChallenges-2].getLoser();
+    public Challenger getFirst() {
+    		return challenges[nChallenges-1].getWinner();
+    }
+    public Challenger getSecond() {
+        return challenges[nChallenges-1].getLoser();
+    }
+    public Challenger getThird() {
+        Challenger cOne = challenges[nChallenges -2].getLoser();
+        Challenger cTwo = challenges[nChallenges-3].getLoser();
         if (cOne.getCurrScore() > cTwo.getCurrScore()) {
         		return cOne;
         }

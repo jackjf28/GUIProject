@@ -21,11 +21,18 @@ public class Bracket {
         }
         nChallengers = teams.size();
         nChallenges = nChallengers - 1;
-        challenges = new BracketNode[nChallenges];
-        for (int i = 0; i < nChallenges; i++) {
-            challenges[i] = new BracketNode(i);
-        }
         
+        //Check for one or no teams
+        if (nChallengers <= 1) {
+        		if (nChallengers == 1) {
+        			challenges = new BracketNode[1];
+        			challenges[0] = new BracketNode(0);
+        			challenges[0].setCOne(new Challenger(teams.get(0)));
+        		}
+        		sc.close();
+        		return;
+        }
+        challenges = new BracketNode[nChallenges];
         for (int j = 0; j <= nChallenges/2; j++) {
             challenges[j].setCOne(new Challenger(teams.get(j)));
         }
@@ -70,7 +77,7 @@ public class Bracket {
     
    
     public Challenger getFirst() {
-    		return challenges[nChallenges-1].getWinner();
+    		return challenges[nChallenges].getWinner();
     }
     public Challenger getSecond() {
         return challenges[nChallenges-1].getLoser();

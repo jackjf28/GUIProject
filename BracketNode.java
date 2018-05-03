@@ -25,6 +25,7 @@ public class BracketNode {
 	
 	public BracketNode(int gameNumber) {
 		this.gameNumber = gameNumber;
+		scoreSubmitted = false;
 		cOne = null;
 		cTwo = null;
 	}
@@ -36,10 +37,10 @@ public class BracketNode {
 		this.cTwo = cTwo;
 	}
 	
-	public Challenger getCOne() {
-		return cOne;
-	}
-	public Challenger getCTwo() {
+	public Challenger getChallenger(int i) {
+		if (i == 1) {
+			return cOne;
+		}
 		return cTwo;
 	}
 	

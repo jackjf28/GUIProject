@@ -147,16 +147,23 @@ public class Main extends Application {
 		button.setOnAction(new EventHandler<ActionEvent>() 
 		{
 			public void handle(ActionEvent e) {
+				// Create a new stage (window) for submitting scores
 				VBox vBox = new VBox();
 				Scene scene = new Scene(vBox, 400, 100, Color.GRAY);
+				Stage stage = new Stage();
+				
+				// ???
 				boolean insertBtn = true;
+				
+				// Loop through twice, once for each challenger
 				for(int i = 0; i < 2; i ++) {
 					Challenger team;
 					team = challenge.getChallenger(i+1);
 					vBox.getChildren().add(challengersInButton(team));
+					
 					if(insertBtn) {
-						//This button will assign scores to their respective team
-						//when the user enters an integer
+						// This button will assign scores to their respective team
+						// when the user enters an integer
 						Button button = new Button("Submit Match Score");
 						button.setOnAction(new EventHandler<ActionEvent>()
 								{
@@ -180,7 +187,7 @@ public class Main extends Application {
 												challenges[newChal.getGameNumber()] = nChal;											
 												gridPane.add(nChal, newChal.getCol(), newChal.getRow());
 											}
-											
+											stage.close();
 										}
 									}
 								});
@@ -190,8 +197,8 @@ public class Main extends Application {
 				}
 				vBox.getChildren().add(new Label("You have to hit enter after typing"
 						+ " the score into each text field! :^)"));
-				Stage stage = new Stage();
-				stage.setTitle("Submit Match Scores");
+				
+				// Display the completed stage
 				stage.setScene(scene);
 				stage.show();
 			}

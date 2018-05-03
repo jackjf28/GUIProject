@@ -239,7 +239,7 @@
 	public void oneOrNoTeams() {
 		Label label = new Label();
 		if (bracket.getNumChallengers() == 0) {
-			label.setText("There were no teams, and therefore \n no challneges and no winners.");
+			label.setText("There were no teams, and therefore \n no challenges and no winners.");
 			label.setAlignment(Pos.CENTER);
 			
 		}

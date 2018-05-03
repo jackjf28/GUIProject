@@ -27,6 +27,7 @@ public class Main extends Application {
 	//Bracket object based on the file passed in
 	private static Bracket bracket;
 	private static GridPane gridPane;
+	private VBox[] challenges;
 	
 	@Override
 	public void start(Stage primaryStage) {
@@ -44,6 +45,7 @@ public class Main extends Application {
 				num -= Math.pow(2.0, i);
 				rounds.add(num);
 			}
+			challenges = new VBox[bracket.getNumChallenges()];
 			for (int i = 1; i < bracket.getNumChallengers(); i++) {
 				for (int j : rounds) {
 					if (j == i-1) {
@@ -55,7 +57,9 @@ public class Main extends Application {
 				int row = (int) (((i-1) - ((Math.pow(2.0, round))-1)*Math.pow(2.0, totalRounds-round)));
 				challenge.setRowAndCol(col, row);
 				
-				gridPane.add(createChallenge(challenge), col, row);
+				VBox nChallenge = createChallenge(challenge);
+				challenges[i -1] = nChallenge;
+				gridPane.add(nChallenge, col, row);
 			}
 			gridPane.setHgap(40.0);
 			gridPane.setVgap(40.0);
@@ -86,21 +90,10 @@ public class Main extends Application {
 			teamLabel.setAlignment(Pos.CENTER);
 			teamLabel.setMinHeight(25);
 			// Assigns the label TBA if the match isn't in the first round
-			if (i == 0) {
-				if (challenge.getCOne() == null) {
+			if (challenge.getChallenger(i+1) == null)
 					teamLabel.setText("TBA");
-				}
-				else {
-					teamLabel.setText(challenge.getCOne().getName());
-				}
-			}
-			else { 
-				if (challenge.getCTwo() == null) {
-					teamLabel.setText("TBA");
-				}
-				else {
-					teamLabel.setText(challenge.getCTwo().getName());
-				}
+			else {
+				teamLabel.setText(challenge.getChallenger(i+1).getName());
 			}
 			teamLabel.setTextFill(Color.RED);
 			
@@ -137,12 +130,7 @@ public class Main extends Application {
 				boolean insertBtn = true;
 				for(int i = 0; i <= 1; i ++) {
 					Challenger team;
-					if (i == 0) {
-						team = challenge.getCOne();
-					}
-					else { 
-						team = challenge.getCTwo();
-					}
+					team = challenge.getChallenger(i+1);
 					vBox.getChildren().add(challengersInButton(team));
 					if(insertBtn) {
 						//This button will assign scores to their respective team
@@ -159,10 +147,17 @@ public class Main extends Application {
 										}
 										else {
 											System.out.println(challenge.getWinner().getName() + " wins!");
-											BracketNode newChal = bracket.updateChallenge(challenge.getGameNumber());
-											// FIGURE OUT HOW TO DELETE ONE CELL IN A GRIDPANE
-											gridPane.add(createChallenge(newChal), 
-													newChal.getCol(), newChal.getRow());
+											challenge.setScoreSubmitted(true);
+											if (bracket.gameOver()) {
+												//endGame();
+											}
+											else {
+												BracketNode newChal = bracket.updateChallenge(challenge.getGameNumber());
+												gridPane.getChildren().remove(challenges[newChal.getGameNumber()]);
+												VBox nChal = createChallenge(newChal);
+												challenges[newChal.getGameNumber()] = nChal;											
+												gridPane.add(nChal, newChal.getCol(), newChal.getRow());
+											}
 											
 										}
 									}

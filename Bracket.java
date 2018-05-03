@@ -35,6 +35,12 @@ public class Bracket {
         
         sc.close();
     }
+    public boolean gameOver() {
+    		if (challenges[nChallenges -1].getScoreSubmitted()) {
+    			return true;
+    		}
+    		return false;
+    }
     
     public int getNumChallenges() {
         return nChallenges;
@@ -87,8 +93,8 @@ public class Bracket {
             else if (i == nChallenges - 15) {
                 output += ("\n" + "1st ROUND\n");
             }
-            output += "game" + (i+1) + ": " + challenges[i].getCOne().getName() 
-                                  + " vs. " + challenges[i].getCTwo().getName() + "\n";
+            output += "game" + (i+1) + ": " + challenges[i].getChallenger(1).getName() 
+                                  + " vs. " + challenges[i].getChallenger(2).getName() + "\n";
         }
         return output;
     }

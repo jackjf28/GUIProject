@@ -80,7 +80,10 @@ public class Bracket {
     
    
     public Challenger getFirst() {
-    		return challenges[nChallenges].getWinner();
+    		if (nChallenges == 0) {
+    			return challenges[nChallenges].getWinner();
+    		}
+    		return challenges[nChallenges-1].getWinner();
     }
     public Challenger getSecond() {
         return challenges[nChallenges-1].getLoser();

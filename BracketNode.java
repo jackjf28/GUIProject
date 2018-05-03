@@ -49,7 +49,10 @@ public class BracketNode {
 	}
 	
 	public Challenger getWinner() {
-		if (cOne.getCurrScore() > cTwo.getCurrScore()) {
+		if (cTwo == null) {
+			return cOne;
+		}
+		else if (cOne.getCurrScore() > cTwo.getCurrScore()) {
 			return cOne;
 		}
 		return cTwo;

@@ -41,10 +41,17 @@ public class Main extends Application {
 		try {
 			// Set up main stage
 			primaryStage.setTitle("Tournament Bracket");
-			// Add elements to a ScrollPane because 16 teams is to many for screen size
-			ScrollPane sp = new ScrollPane();
+			
+			// Create GridPane
 			gridPane = new GridPane();
+			gridPane.setStyle("-fx-background-color: #C0C0C0;"); // Set Color
+			
+			// Use ScrollPane because 16 teams is too large for screen size
+			ScrollPane sp = new ScrollPane();
+			sp.setStyle("-fx-background: #C0C0C0;"); // Set Color
 			sp.setContent(gridPane);
+			
+			// Add elements to Scene
 			Scene scene = new Scene(sp, 600, 500, Color.DARKGRAY);
 			
 			// Initialize the current round of the tournament	

@@ -20,51 +20,71 @@ import javafx.scene.text.Text;
 
 //TODO List
 //Figure out how to overwrite "Score" with the team's final score
-//Figure out how to move the winner to their respective slot in the next round
-//Create a box that lists the final rankings from 1st-3rd place
-
+//Make the final box that lists the final rankings from 1st-3rd place look better
+/** 
+ * 
+ * @author 
+ *
+ */
 public class Main extends Application {
 	//Bracket object based on the file passed in
 	private static Bracket bracket;
+	
+	// The underlying structure for the GUI bracket output
 	private static GridPane gridPane;
+	
+	// A VBox Array to allow all parts of the program access to all nodes in the gridPane
 	private VBox[] challenges;
 	
 	@Override
 	public void start(Stage primaryStage) {
 		try {
+			// Set up main stage
 			primaryStage.setTitle("Tournament Bracket");
 			gridPane = new GridPane();
 			Scene scene = new Scene(gridPane, 600, 500, Color.DARKGRAY);
 			
-			//The current round of the tournament	
+			// Initialize the current round of the tournament	
 			int round = 0;
+			// Calculate the total number of rounds possible
 			int totalRounds = (int)(Math.log10(bracket.getNumChallengers())/Math.log10(2.0));
+			
+			// rounds contains the game numbers that indicate a new round has started
 			ArrayList<Integer> rounds = new ArrayList<Integer>();
+			// Find the game numbers that indicate a new round, and add to rounds
 			int num = bracket.getNumChallenges();
 			for (int i = 0; i < totalRounds - 1; i++) {
 				num -= Math.pow(2.0, i);
 				rounds.add(num);
 			}
 			challenges = new VBox[bracket.getNumChallenges()];
-			for (int i = 1; i < bracket.getNumChallengers(); i++) {
+			// Add all challenges to the display
+			for (int game = 1; game < bracket.getNumChallengers(); game++) {
+				// Increment round if game number indicates new round has started.
 				for (int j : rounds) {
-					if (j == i-1) {
+					if (j == game-1) {
 						round ++;
 					}
 				}
-				BracketNode challenge = bracket.getChallenge(i-1);
+				BracketNode challenge = bracket.getChallenge(game-1);
+				// Calculate row and column based on game number and round
 				int col = round;
-				int row = (int) (((i-1) - ((Math.pow(2.0, round))-1)*Math.pow(2.0, totalRounds-round)));
-				challenge.setRowAndCol(col, row);
+				int row = (int) (((game-1) - ((Math.pow(2.0, round))-1)*Math.pow(2.0, totalRounds-round)));
+				challenge.setRowAndCol(col, row); 
 				
+				// Add challenge VBox to the gridpane and array of challenges
 				VBox nChallenge = createChallenge(challenge);
-				challenges[i -1] = nChallenge;
+				challenges[game -1] = nChallenge;
 				gridPane.add(nChallenge, col, row);
 			}
+			// Set gridPane spacing
 			gridPane.setHgap(40.0);
 			gridPane.setVgap(40.0);
+			
+			//Display finished scene
 			primaryStage.setScene(scene);
 			primaryStage.show();
+			
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
@@ -74,7 +94,7 @@ public class Main extends Application {
 	 * This method creates a vertical box that includes 2 team and final score labels
 	 * and a button for the user to manually update the final scores of the match
 	 * 
-	 * @param challengers the list of 2 teams in a given match
+	 * @param challenge the BracketNode for a given match
 	 * @return a vertical box containing 2 horizontal boxes and a button.
 	 */
 	private VBox createChallenge(BracketNode challenge) {
@@ -109,7 +129,6 @@ public class Main extends Application {
 //			insertBtn = false;
 		}
 		matchup.getChildren().add(1, createScoreButton(challenge, scoreLabelList));
-
 		return matchup;
 	}
 	
@@ -128,7 +147,7 @@ public class Main extends Application {
 				VBox vBox = new VBox();
 				Scene scene = new Scene(vBox, 400, 100, Color.GRAY);
 				boolean insertBtn = true;
-				for(int i = 0; i <= 1; i ++) {
+				for(int i = 0; i < 2; i ++) {
 					Challenger team;
 					team = challenge.getChallenger(i+1);
 					vBox.getChildren().add(challengersInButton(team));
@@ -140,7 +159,7 @@ public class Main extends Application {
 								{
 									public void handle(ActionEvent e) {
 										for (int i = 0; i < scoreLabelList.length; i++) {
-											scoreLabelList[i].setText(team.getCurrScoreString());
+											scoreLabelList[i].setText(challenge.getChallenger(i+1).getCurrScoreString());
 										}
 										if (challenge.hasTie()) {
 											System.out.println("You cannot have a tie!");
@@ -218,14 +237,21 @@ public class Main extends Application {
 		}
 		launch(args);
 	}
+	
+	/**
+	 * This function creates a pop-up window displaying 1st, 2nd, and 3rd place
+	 * at the end of the tournament.
+	 */
 	public void endGame() {
+		// Set up new window
 		VBox vBox = new VBox();
 		Scene scene = new Scene(vBox, 400, 100, Color.GRAY);
-		Label winner = new Label("The Winner is: " + bracket.getFirst().getName());
-		Label second = new Label("Second place is: " + bracket.getSecond().getName());
-		Label third = new Label("Third place is: " + bracket.getThird().getName());
+		Label winner = new Label("1st: " + bracket.getFirst().getName());
+		Label second = new Label("2nd: " + bracket.getSecond().getName());
+		Label third = new Label("3rd: " + bracket.getThird().getName());
 		vBox.getChildren().addAll(winner, second, third);
 		
+		// Create new window and display
 		Stage stage = new Stage();
 		stage.setTitle("FINAL RESULTS");
 		stage.setScene(scene);

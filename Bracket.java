@@ -33,6 +33,9 @@ public class Bracket {
         		return;
         }
         challenges = new BracketNode[nChallenges];
+        for (int i = 0; i < nChallenges; i++) {
+        		challenges[i] = new BracketNode(i);
+        }
         for (int j = 0; j <= nChallenges/2; j++) {
             challenges[j].setCOne(new Challenger(teams.get(j)));
         }

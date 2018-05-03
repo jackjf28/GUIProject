@@ -1,4 +1,32 @@
+package application;
+	
+import java.io.IOException;
+import java.util.ArrayList;
 
+import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.geometry.Pos;
+import javafx.stage.Stage;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.control.ScrollPane;
+
+//TODO List
+//Figure out how to overwrite "Score" with the team's final score
+//Make the final box that lists the final rankings from 1st-3rd place look better
+/** 
+ * 
+ * @author 
+ *
+ */
+public class Main extends Application {
 	//Bracket object based on the file passed in
 	private static Bracket bracket;
 	
@@ -226,7 +254,7 @@
 	
 	public static void main(String[] args) {
 		try {
-			bracket = new Bracket("challengers0.txt");
+			bracket = new Bracket("challengers4.txt");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -244,8 +272,7 @@
 			
 		}
 		else {
-			label.setText("There was only one team, and therefore no challenges \n\n WINNER: "
-		                  + bracket.getFirst().getName());
+			label.setText("There was only one team, and therefore no challenges \n\n WINNER: " + bracket.getFirst().getName());
 			label.setAlignment(Pos.CENTER);
 		}
 		Scene scene = new Scene(label, 400, 200, Color.DARKGRAY);

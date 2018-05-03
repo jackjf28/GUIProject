@@ -149,7 +149,7 @@ public class Main extends Application {
 											System.out.println(challenge.getWinner().getName() + " wins!");
 											challenge.setScoreSubmitted(true);
 											if (bracket.gameOver()) {
-												//endGame();
+												endGame();
 											}
 											else {
 												BracketNode newChal = bracket.updateChallenge(challenge.getGameNumber());
@@ -217,5 +217,18 @@ public class Main extends Application {
 			e.printStackTrace();
 		}
 		launch(args);
+	}
+	public void endGame() {
+		VBox vBox = new VBox();
+		Scene scene = new Scene(vBox, 400, 100, Color.GRAY);
+		Label winner = new Label("The Winner is: " + bracket.getFirst().getName());
+		Label second = new Label("Second place is: " + bracket.getSecond().getName());
+		Label third = new Label("Third place is: " + bracket.getThird().getName());
+		vBox.getChildren().addAll(winner, second, third);
+		
+		Stage stage = new Stage();
+		stage.setTitle("FINAL RESULTS");
+		stage.setScene(scene);
+		stage.show();
 	}
 }

@@ -108,7 +108,7 @@ public class Main extends Application {
 		}
 		//Inserts the button at index 1, 
 		//between both challenger labels of a given match
-		matchup.getChildren().add(1, createScoreButton(node, scoreLabelList));
+//		matchup.getChildren().add(1, createScoreButton(node, scoreLabelList));
 		return matchup;
 	}
 	

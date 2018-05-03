@@ -76,12 +76,12 @@ public class Bracket {
         return challenges[nChallenges-1].getLoser();
     }
     public Challenger getThird() {
-        Challenger cOne = challenges[nChallenges -2].getLoser();
-        Challenger cTwo = challenges[nChallenges-3].getLoser();
-        if (cOne.getCurrScore() > cTwo.getCurrScore()) {
-        		return cOne;
+        Challenger newOne = challenges[nChallenges -2].getLoser();
+        Challenger newTwo = challenges[nChallenges-3].getLoser();
+        if (newOne.getCurrScore() > newTwo.getCurrScore()) {
+        		return newOne;
         }
-        return cTwo;
+        return newTwo;
     }
     
     public String printBracket() {

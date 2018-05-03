@@ -16,7 +16,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Text;
+import javafx.scene.control.ScrollPane;
 
 //TODO List
 //Figure out how to overwrite "Score" with the team's final score
@@ -41,8 +41,11 @@ public class Main extends Application {
 		try {
 			// Set up main stage
 			primaryStage.setTitle("Tournament Bracket");
+			// Add elements to a ScrollPane because 16 teams is to many for screen size
+			ScrollPane sp = new ScrollPane();
 			gridPane = new GridPane();
-			Scene scene = new Scene(gridPane, 600, 500, Color.DARKGRAY);
+			sp.setContent(gridPane);
+			Scene scene = new Scene(sp, 600, 500, Color.DARKGRAY);
 			
 			// Initialize the current round of the tournament	
 			int round = 0;
@@ -81,7 +84,7 @@ public class Main extends Application {
 			gridPane.setHgap(40.0);
 			gridPane.setVgap(40.0);
 			
-			//Display finished scene
+			// Display finished scene
 			primaryStage.setScene(scene);
 			primaryStage.show();
 			
@@ -231,7 +234,7 @@ public class Main extends Application {
 	
 	public static void main(String[] args) {
 		try {
-			bracket = new Bracket("challengers8.txt");
+			bracket = new Bracket("challengers16.txt");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

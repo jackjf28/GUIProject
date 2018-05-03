@@ -1,32 +1,4 @@
-package application;
-	
-import java.io.IOException;
-import java.util.ArrayList;
 
-import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.geometry.Pos;
-import javafx.stage.Stage;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.scene.control.ScrollPane;
-
-//TODO List
-//Figure out how to overwrite "Score" with the team's final score
-//Make the final box that lists the final rankings from 1st-3rd place look better
-/** 
- * 
- * @author 
- *
- */
-public class Main extends Application {
 	//Bracket object based on the file passed in
 	private static Bracket bracket;
 	
@@ -39,6 +11,12 @@ public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) {
 		try {
+			// if one or zero teams
+			if (bracket.getNumChallengers() <= 1) {
+				oneOrNoTeams();
+				return;
+			}
+			
 			// Set up main stage
 			primaryStage.setTitle("Tournament Bracket");
 			
@@ -248,11 +226,32 @@ public class Main extends Application {
 	
 	public static void main(String[] args) {
 		try {
-			bracket = new Bracket("challengers16.txt");
+			bracket = new Bracket("challengers0.txt");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		launch(args);
+	}
+	
+	/**
+	 * This function handles the end game pop-up for one or zero teams
+	 */
+	public void oneOrNoTeams() {
+		Label label = new Label();
+		if (bracket.getNumChallengers() == 0) {
+			label.setText("There were no teams, and therefore \n no challneges and no winners.");
+			label.setAlignment(Pos.CENTER);
+			
+		}
+		else {
+			label.setText("There was only one team, and therefore no challenges \n\n WINNER: "
+		                  + bracket.getFirst().getName());
+			label.setAlignment(Pos.CENTER);
+		}
+		Scene scene = new Scene(label, 400, 200, Color.DARKGRAY);
+		Stage stage = new Stage();
+		stage.setScene(scene);
+		stage.show();
 	}
 	
 	/**
@@ -265,8 +264,14 @@ public class Main extends Application {
 		Scene scene = new Scene(vBox, 400, 100, Color.GRAY);
 		Label winner = new Label("1st: " + bracket.getFirst().getName());
 		Label second = new Label("2nd: " + bracket.getSecond().getName());
-		Label third = new Label("3rd: " + bracket.getThird().getName());
-		vBox.getChildren().addAll(winner, second, third);
+		if (bracket.getNumChallengers() > 3) {
+			Label third = new Label("3rd: " + bracket.getThird().getName());
+			vBox.getChildren().addAll(winner, second, third);
+		}
+		else {
+			vBox.getChildren().addAll(winner, second);
+		}
+		
 		
 		// Create new window and display
 		Stage stage = new Stage();

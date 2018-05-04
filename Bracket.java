@@ -4,6 +4,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+/** 
+ * This Class represents a tournament bracket. It takes a file of ranked competitors 
+ * and places them into challenges, matching first to last, second to second-to-last, etc.
+ * It also creates additional rounds of the tournament, and moves the winners of each challenge
+ * to the next position in the tournament.
+ */
 public class Bracket {
 	// An Array containing all challenges within the bracket
     BracketNode[] challenges;

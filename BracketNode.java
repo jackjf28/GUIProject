@@ -1,3 +1,17 @@
+///////////////////////////////////////////////////////////////////////////////
+// Title: 		Tournament Bracket
+// Due Date: 	        May 4th, 2018
+// Files:		Main.java Challenger.java BracketNode.java Bracket.java
+// Course:		CS400, Spring 2018
+//
+// Authors:		Jack Farrell, Matt White, Jay Desai, Sam Fetherston, Megan Fischer
+// Email:		jfarrell3@wisc.edu, jdesai2@wisc.edu, sfetherston@wisc.edu, mfischer9@wisc.edu,
+//			mwhite34@wisc.edu
+// Lecturer:	        Deb Deppeler
+//
+// Bugs: Team names change color when GUI is clicked
+///////////////////////////////////////////////////////////////////////////////
+
 package application;
 
 /** 

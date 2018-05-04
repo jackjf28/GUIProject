@@ -1,13 +1,13 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Title: 		Tournament Bracket
-// Due Date: 	        May 4th, 2018
+// Due Date: 	May 4th, 2018
 // Files:		Main.java Challenger.java BracketNode.java Bracket.java
 // Course:		CS400, Spring 2018
 //
 // Authors:		Jack Farrell, Matt White, Jay Desai, Sam Fetherston, Megan Fischer
 // Email:		jfarrell3@wisc.edu, jdesai2@wisc.edu, sfetherston@wisc.edu, mfischer9@wisc.edu,
-//			mwhite34@wisc.edu
-// Lecturer:	        Deb Deppeler
+//				mwhite34@wisc.edu
+// Lecturer:	Deb Deppeler
 //
 // Bugs: Team names change color when GUI is clicked
 ///////////////////////////////////////////////////////////////////////////////
@@ -30,6 +30,8 @@ public class BracketNode {
 	// Number of row and column location in GridPane
 	int row;
 	int col;
+	// Stores the loser of the challenge
+	Challenger loser;
 	
 	/** Set GridPane location */
 	public void setRowAndCol(int col, int row) {
@@ -86,6 +88,9 @@ public class BracketNode {
 	 * or false (challenge has not been completed)
 	 */
 	public void setScoreSubmitted(boolean value) {
+		if (value) {
+			setLoser();
+		}
 		this.scoreSubmitted = value;
 	}
 	
@@ -105,12 +110,20 @@ public class BracketNode {
 		return cTwo;
 	}
 	
-	/** Return challenger with the lower currScore */
-	public Challenger getLoser() {
+	/** Set the challenger with the lower currScore to loser */
+	public void setLoser() {
+		System.out.println(cOne.getCurrScore() + " " + cTwo.getCurrScore());
 		if (cOne.getCurrScore() < cTwo.getCurrScore()) {
-			return cOne;
+			loser = cOne;
 		}
-		return cTwo;
+		else {
+			loser = cTwo;
+		}
+	}
+	
+	/** Return loser */ 
+	public Challenger getLoser() {
+		return loser;
 	}
 	
 	/** Check for a tie between the Challengers; true = there is a tie */

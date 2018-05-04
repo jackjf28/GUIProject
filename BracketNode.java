@@ -112,7 +112,6 @@ public class BracketNode {
 	
 	/** Set the challenger with the lower currScore to loser */
 	public void setLoser() {
-		System.out.println(cOne.getCurrScore() + " " + cTwo.getCurrScore());
 		if (cOne.getCurrScore() < cTwo.getCurrScore()) {
 			loser = cOne;
 		}

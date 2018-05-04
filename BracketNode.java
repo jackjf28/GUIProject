@@ -1,5 +1,11 @@
 package application;
 
+/** 
+ * This Class represents a competition between two challengers. It stores
+ * both of the challengers, whether the competition has been completed or not, 
+ * it's game number relative to the Bracket Class, and it's column and row position
+ * in the gridPane in the GUI.
+ */
 public class BracketNode {
 	Challenger cOne; 
 	Challenger cTwo;

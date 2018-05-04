@@ -1,3 +1,16 @@
+///////////////////////////////////////////////////////////////////////////////
+// Title: 		Tournament Bracket
+// Due Date: 	May 4th, 2018
+// Files:		Main.java Challenger.java BracketNode.java Bracket.java
+// Course:		CS400, Spring 2018
+//
+// Authors:		Jack Farrell, Matt White, Jay Desai, Sam Fetherston, Megan Fischer
+// Email:		jfarrell3@wisc.edu, jdesai2@wisc.edu, sfetherston@wisc.edu, mfischer9@wisc.edu,
+//				mwhite34@wisc.edu
+// Lecturer:	Deb Deppeler
+//
+// Bugs: Team names change color when GUI is clicked
+///////////////////////////////////////////////////////////////////////////////
 package application;
 	
 import java.io.IOException;
@@ -18,12 +31,13 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.control.ScrollPane;
 
-//TODO List
-//Figure out how to overwrite "Score" with the team's final score
-//Make the final box that lists the final rankings from 1st-3rd place look better
-/** 
+/**
  * 
- * @author 
+ * This is the main class. Reads in a team file,
+ * creates the GUI for the Tournament Bracket,
+ * and updates the GUI based on user input.
+ * 
+ * @author A-Team 34
  *
  */
 public class Main extends Application {
@@ -36,6 +50,12 @@ public class Main extends Application {
 	// A VBox Array to allow all parts of the program access to all nodes in the gridPane
 	private VBox[] challenges;
 	
+	/**
+	 * Builds the GUI for the user to interact with based on the text file
+	 * on the command line.
+	 * 
+	 * @param primaryStage The platfrom that the GUI will be built on to
+	 */
 	@Override
 	public void start(Stage primaryStage) {
 		try {
@@ -157,8 +177,7 @@ public class Main extends Application {
 	 */
 	private Button createScoreButton(BracketNode challenge, Label[] scoreLabelList) {
 		Button button = new Button("Submit Scores");
-		button.setOnAction(new EventHandler<ActionEvent>() 
-		{
+		button.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent e) {
 				// Create a new stage (window) for submitting scores
 				VBox vBox = new VBox();
@@ -178,38 +197,37 @@ public class Main extends Application {
 						// This button will assign scores to their respective team
 						// when the user enters an integer
 						Button button = new Button("Submit Match Score");
-						button.setOnAction(new EventHandler<ActionEvent>()
-								{
-									public void handle(ActionEvent e) {
-										for (int i = 0; i < scoreLabelList.length; i++) {
-											scoreLabelList[i].setText(challenge.getChallenger(i+1).getCurrScoreString());
-										}
-										if (challenge.hasTie()) {
-											System.out.println("You cannot have a tie!");
-										}
-										else {
-											System.out.println(challenge.getWinner().getName() + " wins!");
-											challenge.setScoreSubmitted(true);
-											if (bracket.gameOver()) {
-												endGame();
-											}
-											else {
-												BracketNode newChal = bracket.updateChallenge(challenge.getGameNumber());
-												gridPane.getChildren().remove(challenges[newChal.getGameNumber()]);
-												VBox nChal = createChallenge(newChal);
-												challenges[newChal.getGameNumber()] = nChal;											
-												gridPane.add(nChal, newChal.getCol(), newChal.getRow());
-											}
-											stage.close();
-										}
+						button.setOnAction(new EventHandler<ActionEvent>() {
+							public void handle(ActionEvent e) {
+								for (int i = 0; i < scoreLabelList.length; i++) {
+									scoreLabelList[i].setText(challenge.getChallenger(i+1).getCurrScoreString());
+								}
+								if (challenge.hasTie()) {
+									System.out.println("You cannot have a tie!");
+								}
+								else {
+									System.out.println(challenge.getWinner().getName() + " wins!");
+									challenge.setScoreSubmitted(true);
+									if (bracket.gameOver()) {
+										endGame();
 									}
-								});
+									else {
+										BracketNode newChal = bracket.updateChallenge(challenge.getGameNumber());
+										gridPane.getChildren().remove(challenges[newChal.getGameNumber()]);
+										VBox nChal = createChallenge(newChal);
+										challenges[newChal.getGameNumber()] = nChal;											
+										gridPane.add(nChal, newChal.getCol(), newChal.getRow());
+									}
+									stage.close();
+								}
+							}
+						});
 						vBox.getChildren().add(button);
 					}
 					insertBtn = false;
 				}
 				vBox.getChildren().add(new Label("You have to hit enter after typing"
-						+ " the score into each text field! :^)"));
+						+ " the score into each text field!"));
 				
 				// Display the completed stage
 				stage.setScene(scene);
@@ -239,26 +257,37 @@ public class Main extends Application {
 		insertedScore.setMaxHeight(20); insertedScore.setMaxWidth(100);
 		insertedScore.setPromptText("Enter Score");
 		//Changes score when enter is hit on the text box
-		insertedScore.setOnAction(new EventHandler<ActionEvent>()
-				{
-					public void handle(ActionEvent e) {				
-						Integer finalScore = Integer.parseInt(insertedScore.getText());
-						team.setCurrScore(finalScore);
-						team.setCurrScoreString(insertedScore.getText());
-					}
-				});
+		insertedScore.setOnAction(new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent e) {				
+				Integer finalScore = Integer.parseInt(insertedScore.getText());
+				team.setCurrScore(finalScore);
+				team.setCurrScoreString(insertedScore.getText());
+			}
+		});
 		
 		teamAndScore.getChildren().addAll(teamLabel, insertedScore);	
 		return teamAndScore;
 	}
 	
+	/**
+	 * The main method of the program. Processes a text file 
+	 * and implements it into the GUI
+	 * 
+	 * @param args will contain the text file of teams
+	 */
 	public static void main(String[] args) {
-		try {
-			bracket = new Bracket("challengers4.txt");
-		} catch (IOException e) {
-			e.printStackTrace();
+		if(args.length != 1) {
+			System.out.println("Usage: java -jar executable.jar <text_file> ");
 		}
-		launch(args);
+		else {
+			try {
+				bracket = new Bracket(args[0]);
+			} catch (IOException e) {
+				System.out.println("File was not found!");
+				e.printStackTrace();
+			}
+			launch(args);
+		}
 	}
 	
 	/**
